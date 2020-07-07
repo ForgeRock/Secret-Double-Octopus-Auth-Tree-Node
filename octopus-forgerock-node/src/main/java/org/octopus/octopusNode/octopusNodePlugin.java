@@ -16,6 +16,7 @@
 
 package org.octopus.octopusNode;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
@@ -67,7 +68,7 @@ public class octopusNodePlugin extends AbstractNodeAmPlugin {
 	@Override
 	protected Map<String, Iterable<? extends Class<? extends Node>>> getNodesByVersion() {
 		return Collections.singletonMap(octopusNodePlugin.currentVersion, 
-				Collections.singletonList(octopusNode.class));
+				Arrays.asList(octopusNode.class, octopusReturnNode.class));
 	}
 
     /** 
