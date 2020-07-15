@@ -193,15 +193,15 @@ configure its settings.
 
 1. Open the **Sign On** tab and review the following settings:
 
-    |       **Setting**                       |            **Value / Notes**        |                                                                                                                                                          
-    | ------------------------------ |  ------------------------------   |
-    | Authentication Token Timeout   | Used as part of the REST API communication. It sets the token timeout for an authentication request from the application.                            |
-    | Rest Payload Signing Algorithm | Method with which the X.509 certificate was generated.                                                                                               |
-    | X.509 Certificate              | The service’s certificate file, which will be used as part of the Windows Credential provider installation. Click **Download** to download the file. |
-    | REST Endpoint URL              | Access URL from the Windows client to the Octopus Authentication Server.                                                                             |
-    | Service Key                    | An identifier for the service. This key is one of the parameters required for the Windows client to connect to the Octopus Authentication Server.    |
+    | **Setting**           | **Value / Notes**                                                                      |
+    | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+    | Rest Payload Signing Algorithm | Method with which the X.509 certificate was generated.                                                                      |
+    | X.509 Certificate     | The service’s certificate file, which will be used as part of the Octopus Return Node settings. Click **Download** to download the file.             |
+    | Rest Endpoint URL     | Access URL from Octopus Node to the Octopus Authentication Server.  |
+    | API Token             | An identifier for the service. This Token is one of the parameters required for Octopus Node to connect to the Octopus Authentication Server. |
 
-    ![](.//media/image10.png)
+
+    ![](.//media/SignOnTab.png)
 
 16. At the bottom of the **Sign On** tab, click **Save**.
 
