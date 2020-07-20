@@ -15,6 +15,7 @@ import com.google.inject.Singleton;
 public class OctopusCertServiceImpl implements OctopusCertService {
 
     private PublicKey publicKey;
+    private String certString;
 
     @Inject
     public OctopusCertServiceImpl() {
@@ -22,7 +23,7 @@ public class OctopusCertServiceImpl implements OctopusCertService {
 
     @Override
     public PublicKey getPublicKey(String certStr) throws CertificateException {
-        if (publicKey == null) {
+        if (publicKey == null || !certString.equals(certStr)) {
             StringBuilder builder = new StringBuilder(certStr);
             int first = builder.indexOf(" ");
             int last = builder.lastIndexOf(" ");
@@ -35,6 +36,7 @@ public class OctopusCertServiceImpl implements OctopusCertService {
             InputStream targetStream = new ByteArrayInputStream(formatted.getBytes());
             Certificate cert = cf.generateCertificate(targetStream);
             publicKey = cert.getPublicKey();
+            certString = certStr;
         }
         return publicKey;
     }
