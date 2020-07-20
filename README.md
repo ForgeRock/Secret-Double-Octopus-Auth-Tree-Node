@@ -247,26 +247,36 @@ Authenticator Mobile App.
 
     After the restart, the node will appear in the Authentication Trees **Components** palette.
 
-3.  Add Octopus Authentication Node to your environment. For example:
+3.  Add Octopus Authentication Node and Octopus Return Node to your environment. For example:
 
-    ![](.//media/image13.png)
+    ![](.//media/NodeInstallation.png)
 
 4.  Continue by configuring node parameters, as described below.
 
-## Configuring Octopus Authentication Node
+## Configuring Octopus Authentication Node and Octopus Return Node
 
 The final step of the integration process is configuring the parameters
-for Octopus Authentication Node.
+for Octopus Authentication Node and Octopus Return Node.
 
-![](.//media/image14.png)
+The following example shows parameters for **Octopus Authentication Node**:
 
-The values for the **Service Key**, **Service URL** and **Service
-Certificate** can be copied from the **Sign On** tab of the REST API
+![](.//media/Params_AuthenticationNode.png)
+
+The **Message** that you manually add here will be displayed to users during Octopus Authentication on the Octopus Mobile App.
+
+The values for the **API Token** and the **Service URL** can be copied from the **Sign On** tab of the REST API
 service that you created in the Octopus Management Console:
 
- - **REST Endpoint URL:** Click the Copy icon to copy the value.
+ - **API Token:** Click **View**. Then, in the popup that opens, click **Copy** to copy the value. Click the Copy icon to copy the value.
 
- - **X.509 Certificate and Service Key:** Click **View**. Then, in the
-    popup that opens, click **Copy** to copy the value.
+ - **Service URL:** This corresponds to the **REST Endpoint URL**. Click the Copy icon to copy the value.
 
-![](.//media/image15.png)
+![](.//media/SignOnSettings_AuthNode.png)
+
+The example below shows parameters for **Octopus Return Node**:
+
+![](.//media/Params_ReturnNode.png)
+
+The **Service Certificate** value can be copied from the **Sign On** tab of the REST API service that you created in the Octopus Management Console. Under **X.509 Certificate**, click **View**. Then, in the popup that opens, click **Copy** to copy the content.
+
+![](.//media/SignOnSettings_ReturnNode.png)
