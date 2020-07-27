@@ -18,15 +18,12 @@ package org.octopus.octopusNode;
 
 import static org.octopus.octopusNode.PollingService.OCTOPUS_RESPONSE_ID;
 
-import javax.inject.Inject;
-
-import com.google.inject.assistedinject.Assisted;
-
 import java.net.URISyntaxException;
-import java.security.KeyStoreException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import javax.inject.Inject;
 
 import org.forgerock.http.handler.HttpClientHandler;
 import org.forgerock.http.protocol.Request;
@@ -42,8 +39,10 @@ import org.forgerock.services.context.RootContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Node.Metadata(outcomeProvider = AbstractDecisionNode.OutcomeProvider.class, configClass = octopusNode.Config.class)
-public class octopusNode extends AbstractDecisionNode {
+import com.google.inject.assistedinject.Assisted;
+
+@Node.Metadata(outcomeProvider = AbstractDecisionNode.OutcomeProvider.class, configClass = OctopusNode.Config.class)
+public class OctopusNode extends AbstractDecisionNode {
     private final Logger logger = LoggerFactory.getLogger("amAuth");
     private final HttpClientHandler clientHandler;
     private final PollingService pollingService;
@@ -56,9 +55,7 @@ public class octopusNode extends AbstractDecisionNode {
      */
     public interface Config {
         @Attribute(order = 100)
-        default String apiToken() {
-            return "";
-        }
+        char[] apiToken();
 
         @Attribute(order = 200)
         default String serviceUrl() {
@@ -72,10 +69,10 @@ public class octopusNode extends AbstractDecisionNode {
     }
 
     @Inject
-    public octopusNode(@Assisted final Config config, HttpClientService clientService, PollingService pollingService) throws NodeProcessException, KeyStoreException {
+    public OctopusNode(@Assisted final Config config, HttpClientService clientService, PollingService pollingService) {
         this.clientHandler = clientService.getClient();
         this.pollingService = pollingService;
-        this.applicationKey = config.apiToken();
+        this.applicationKey = String.valueOf(config.apiToken());
         this.serviceUrl = config.serviceUrl();
         this.message = config.message();
     }
@@ -96,17 +93,16 @@ public class octopusNode extends AbstractDecisionNode {
     }
 
     private Request authRequest(final String username)
-            throws URISyntaxException, InterruptedException {
+            throws URISyntaxException {
         String url = this.serviceUrl + "/1/auth";
-        Map<String, String> reqMap = new HashMap<String, String>();
+        Map<String, String> reqMap = new HashMap<>();
         reqMap.put("appKey", this.applicationKey);
         reqMap.put("username", username);
         reqMap.put("message", message);
         JsonValue json = new JsonValue(reqMap);
-        Request request = new Request()
+        return new Request()
             .setUri(url)
             .setMethod("POST")
             .setEntity(json.asMap());
-        return request;
     }
 }
