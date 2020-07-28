@@ -55,7 +55,7 @@ import org.forgerock.openam.plugins.PluginException;
  * @supported.all.api
  * @since AM 5.5.0
  */
-public class octopusNodePlugin extends AbstractNodeAmPlugin {
+public class OctopusNodePlugin extends AbstractNodeAmPlugin {
 
 	static private String currentVersion = "1.0.0";
 	
@@ -67,8 +67,8 @@ public class octopusNodePlugin extends AbstractNodeAmPlugin {
      */
 	@Override
 	protected Map<String, Iterable<? extends Class<? extends Node>>> getNodesByVersion() {
-		return Collections.singletonMap(octopusNodePlugin.currentVersion, 
-				Arrays.asList(octopusNode.class, octopusReturnNode.class));
+		return Collections.singletonMap(OctopusNodePlugin.currentVersion,
+										Arrays.asList(OctopusNode.class, OctopusReturnNode.class));
 	}
 
     /** 
@@ -116,6 +116,6 @@ public class octopusNodePlugin extends AbstractNodeAmPlugin {
      */
 	@Override
 	public String getPluginVersion() {
-		return octopusNodePlugin.currentVersion;
+		return OctopusNodePlugin.currentVersion;
 	}
 }
