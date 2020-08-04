@@ -21,6 +21,7 @@ import org.forgerock.openam.auth.node.api.Action;
 import org.forgerock.openam.auth.node.api.Node;
 import org.forgerock.openam.auth.node.api.NodeProcessException;
 import org.forgerock.openam.auth.node.api.TreeContext;
+import org.forgerock.openam.sm.annotations.adapters.Password;
 import org.forgerock.util.i18n.PreferredLocales;
 import org.forgerock.util.promise.NeverThrowsException;
 import org.forgerock.util.promise.Promise;
@@ -46,6 +47,7 @@ public class OctopusReturnNode extends AbstractDecisionNode {
      */
     public interface Config {
         @Attribute(order = 100)
+        @Password
         char[] serviceCert();
     }
 
