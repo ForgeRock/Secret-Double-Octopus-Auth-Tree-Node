@@ -37,8 +37,8 @@ have been met:
 
   - ForgeRock is installed and operating
 
-  - Octopus Authentication Node has been downloaded from ForgeRock
-    Marketplace
+  - Octopus Authentication Node has been downloaded from [a ForgeRock
+    Marketplace] (https://github.com/ForgeRock/Secret-Double-Octopus-Auth-Tree-Node/releases/latest)
   - The **gson.jar** file has been downloaded from Google     
 
 ## <a name="architecture"></a>System Architecture Overview
