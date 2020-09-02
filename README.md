@@ -18,6 +18,12 @@ ForgeRock Marketplace.
 
 **ForgeRock Authentication with Octopus Authentication Node**
 
+## Getting Started
+
+Before you begin, you will need to obtain installation packages for the Octopus Authentication Server and Windows Passwordless Desktop MFA from Secret Double Octopus. Please contact us at sales@doubleoctopus.com for assistance or for more information.
+
+For assistance with technical issues, please contact support@doubleoctopus.com or frank.gasparovic@forgerock.com
+
 ## Prerequisites
 
 Before beginning installation, verify that the following requirements
