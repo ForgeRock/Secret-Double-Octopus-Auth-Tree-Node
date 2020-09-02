@@ -23,7 +23,7 @@ ForgeRock Marketplace.
 Before beginning installation, verify that the following requirements
 have been met:
 
-  - Octopus Authentication Server v4.6 (or higher) is installed and
+  - Octopus Authentication Server v4.6.4 (or higher) is installed and
     operating with a valid enterprise certificate (for User Portal and
     administrator access via HTTPS)
 
