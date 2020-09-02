@@ -245,7 +245,7 @@ operational, and the relevant users need to be enrolled with the Octopus
 Authenticator Mobile App.
 
 **To install Octopus Authentication Node:**
-1.  Download the latest version of the SDO integration (**octopusNode-1.0.0.jar**) from ForgeRock MarketPlace.
+1.  Download the latest version of the SDO integration (**octopusNode-1.0.0.jar**) from [ForgeRock MarketPlace](https://github.com/ForgeRock/Secret-Double-Octopus-Auth-Tree-Node/releases/latest).
 
 1.  Copy the .jar file into the **../web-container/webapps/openam/WEB-INF/lib** directory where your AM console is deployed.
 
