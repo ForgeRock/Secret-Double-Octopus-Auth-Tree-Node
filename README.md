@@ -14,7 +14,7 @@ diagram below.
 Octopus Authentication Node can be easily downloaded directly from
 ForgeRock Marketplace.
 
-<img src=".//media/image1.png" style="width:5.59373in;height:2.7867in" />
+<img src=".//media/OctopusFRAuthenticationFlow_Diagram.png" style="width:5.59373in;height:2.7867in" />
 
 **ForgeRock Authentication with Octopus Authentication Node**
 
@@ -57,7 +57,7 @@ diagram represent the authentication flow:
 
 4.  The user is authenticated with Octopus Authenticator.
 
-![](.//media/image2.png)
+<img src=".//media/SystemArchitecture.png" style="width:5.59373in;height:2.7867in" />
 
 **Octopus Authentication Node and ForgeRock Integration: Architecture and
 Flow**
@@ -86,11 +86,11 @@ You can integrate either an **Active Directory** type or a **ForgeRock directory
 5.  Click **Add Directory** to open the **Select Directory Type**
     dialog. From the **Directory Type** dropdown list, select either **Active Directory** or **ForgeRock**.
     
-    ![](.//media/DirectoryType_1.png)
+    <img src=".//media/DirectoryType_1.png" style="width:2.78795in;height:2.57292in" />
 
 2.  If you want directory users to be synced automatically, enable the **Directory Sync** toggle button. When Directory Sync is disabled     (as in the example below) you will need to import users manually. (For more information, refer to the Octopus Management Console    Admin Guide.)
 
-    ![](.//media/DirectoryType_2.png)
+    <img src=".//media/DirectoryType_2.png" style="width:2.78795in;height:2.57292in" />
 
 6.  Click **Select**.
 
@@ -134,7 +134,7 @@ You can integrate either an **Active Directory** type or a **ForgeRock directory
     </tbody>
     </table>
 
-    ![](.//media/image4.png)
+    <img src=".//media/DirectorySettings.png" style="width:5.69792in;height:3.74139in" />
 
 8.  To verify your settings, click **Test Connection**.
 
@@ -144,7 +144,7 @@ You can integrate either an **Active Directory** type or a **ForgeRock directory
     section, verify that the **Octopus Authenticator** toggle button is
     enabled.
 
-    ![](.//media/image5.png)
+    <img src=".//media/DirectoryPolicy_Authenticators.png" style="width:5.69792in;height:3.74139in" />
 
 11. Click **Save** (if the **Save** button is enabled) and then publish
     your changes.
@@ -159,11 +159,11 @@ configure its settings.
 
 1. In the **REST API** tile, click **Add**.
 
-    ![](.//media/image6.png)
+    <img src=".//media/Add_RESTAPIService.png" style="width:5.69792in;height:3.74139in" />
 
     Then, in the dialog that opens, click **Create**.
 
-    ![](.//media/image7.png)
+    <img src=".//media/Create_RESTAPIService.png" style="width:5.69792in;height:3.74139in" />
 
 1. Review the settings in the **General Info** tab. If you make any changes, click **Save**.
 
@@ -173,13 +173,13 @@ configure its settings.
     | Description           | Enter a brief note about the service if desired.                                                                                     |
     | Display Icon          | This icon will be displayed on the Login page for the service. To change the default icon, click and upload the icon of your choice. |
 
-    ![](.//media/image8.png)
+    <img src=".//media/RESTAPI_GeneralInfo.png" style="width:5.69792in;height:3.74139in" />
 
 1. Open the **Parameters** tab. From the **Octopus Authentication
     Login** dropdown list, select the credential type that will be sent
     by the user for the authentication (usually **Email**).
 
-    ![](.//media/image9.png)
+    <img src=".//media/RESTAPI_Parameters.png" style="width:5.69792in;height:3.74139in" />
 
     Then, click **Save**.
     
@@ -187,13 +187,13 @@ configure its settings.
 
     a. At the top of the **Parameters** tab, open the **Service Parameters** list and select the relevant directory. For example:
     
-     ![](.//media/ServiceParameters_FR.png)
+     <img src=".//media/ServiceParameters_FR.png" style="width:5.69792in;height:3.74139in" />
     
     **Note**: If the directory is disabled, enable it by opening the **Directories** tab, selecting the directory and clicking **Save**.
   
     b. Select the checkbox next to the **Octopus Authentication Login** parameter. Then, open the dropdown list and select the value to   override the default parameter.
     
-    ![](.//media/OverrideParameter_FRDirectory.png)
+    <img src=".//media/OverrideParameter_FRDirectory.png" style="width:5.69792in;height:3.74139in" />
     
     c. At the bottom of the **Parameters** tab, click **Save**.
 
@@ -207,14 +207,14 @@ configure its settings.
     | API Token             | An identifier for the service. This Token is one of the parameters required for Octopus Node to connect to the Octopus Authentication Server. |
 
 
-    ![](.//media/SignOnTab.png)
+    <img src=".//media/SignOnTab.png" style="width:5.69792in;height:3.74139in" />
 
 16. At the bottom of the **Sign On** tab, click **Save**.
 
 17. Open the **Directories** tab and select the directories that will be
     available for the service. Then, click **Save**.
 
-    ![](.//media/image11.png)
+    <img src=".//media/RESTAPI_Directories.png" style="width:5.69792in;height:3.74139in" />
 
 18. Open the **Users & Groups** tab and click **Add**.
 
@@ -227,7 +227,8 @@ configure its settings.
 
     The groups and users you selected are listed in the **Users & Groups** tab.
 
-    ![](.//media/image12.png)
+    <img src=".//media/RESTAPI_UsersAndGroups.png" style="width:5.69792in;height:3.74139in" />
+
 
 20. Click **Save** and then publish your changes.
 
@@ -255,7 +256,7 @@ Authenticator Mobile App.
 
 3.  Add Octopus Authentication Node and Octopus Return Node to your environment. For example:
 
-    ![](.//media/NodeInstallation.png)
+    <img src=".//media/NodeInstallation.png" style="width:5.69792in;height:3.74139in" />
 
 4.  Continue by configuring node parameters, as described below.
 
@@ -266,7 +267,7 @@ for Octopus Authentication Node and Octopus Return Node.
 
 The following example shows parameters for **Octopus Authentication Node**:
 
-![](.//media/Params_AuthenticationNode.png)
+<img src=".//media/Params_AuthenticationNode.png" style="width:5.69792in;height:3.74139in" />
 
 The **Message** that you manually add here will be displayed to users during Octopus Authentication on the Octopus Mobile App.
 
@@ -276,13 +277,13 @@ service that you created in the Octopus Management Console:
  - **API Token:** Click **View**. Then, in the popup that opens, click **Copy** to copy the value. Click the Copy icon to copy the value.
 
  - **Service URL:** This corresponds to the **REST Endpoint URL**. Click the Copy icon to copy the value.
-
-![](.//media/SignOnSettings_AuthNode.png)
+ 
+ <img src=".//media/SignOnSettings_AuthNode.png" style="width:5.69792in;height:3.74139in" />
 
 The example below shows parameters for **Octopus Return Node**:
 
-![](.//media/Params_ReturnNode.png)
+<img src=".//media/Params_ReturnNode.png" style="width:5.69792in;height:3.74139in" />
 
 The **Service Certificate** value can be copied from the **Sign On** tab of the REST API service that you created in the Octopus Management Console. Under **X.509 Certificate**, click **View**. Then, in the popup that opens, click **Copy** to copy the content.
 
-![](.//media/SignOnSettings_ReturnNode.png)
+<img src=".//media/SignOnSettings_ReturnNode.png" style="width:5.69792in;height:3.74139in" />
