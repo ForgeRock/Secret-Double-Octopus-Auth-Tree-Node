@@ -14,7 +14,7 @@ diagram below.
 Octopus Authentication Node can be easily downloaded directly from
 ForgeRock Marketplace.
 
-![](.//media/image1.png)
+<img src=".//media/image1.png" style="width:5.59373in;height:2.7867in" />
 
 **ForgeRock Authentication with Octopus Authentication Node**
 
