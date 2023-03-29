@@ -16,4 +16,4 @@
 
 @Library(['forgerock-pipeline-libs', 'partner-nodes-libs']) _
 
-buildPartnerNodes()
+buildPartnerNodes("octopus-forgerock-node")
