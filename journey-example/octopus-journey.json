@@ -1,0 +1,208 @@
+{
+  "meta": {
+    "origin": "https://openam-sdo-tntp.forgeblocks.com/platform/?realm=alpha#/journeys",
+    "exportedBy": "tyler.gelinas@forgerock.com",
+    "exportDate": "2023-03-31T19:18:27.279Z",
+    "exportTool": "platform-admin ui tree export",
+    "exportToolVersion": "1.0",
+    "treesSelectedForExport": [
+      "octopus"
+    ],
+    "innerTreesIncluded": []
+  },
+  "trees": {
+    "octopus": {
+      "tree": {
+        "_id": "octopus",
+        "_rev": "584478882",
+        "identityResource": "managed/alpha_user",
+        "uiConfig": {
+          "categories": "[]"
+        },
+        "entryNodeId": "46600571-fa37-4262-9519-42582b0387ec",
+        "nodes": {
+          "46600571-fa37-4262-9519-42582b0387ec": {
+            "x": 270,
+            "y": 166.015625,
+            "connections": {
+              "outcome": "26ef0dcb-a43e-4d1e-a58a-ae4885bb4829"
+            },
+            "nodeType": "UsernameCollectorNode",
+            "displayName": "Username Collector"
+          },
+          "26ef0dcb-a43e-4d1e-a58a-ae4885bb4829": {
+            "x": 494,
+            "y": 195.015625,
+            "connections": {
+              "True": "1abc700d-5b13-4b6e-a6a4-808e72069c3f",
+              "Error": "e301438c-0bd0-429c-ab0c-66126501069a"
+            },
+            "nodeType": "OctopusNode",
+            "displayName": "Octopus Node"
+          },
+          "b7f4da16-faee-4590-8632-3d179e3394b3": {
+            "x": 942,
+            "y": 152.015625,
+            "connections": {
+              "FALSE": "92b339f3-eed9-476a-95e7-16e8ff9890a6",
+              "UNANSWERED": "92b339f3-eed9-476a-95e7-16e8ff9890a6",
+              "TRUE": "70e691a5-1e33-4ac3-a356-e7b6d60d92e0"
+            },
+            "nodeType": "OctopusReturnNode",
+            "displayName": "Octopus Return Node"
+          },
+          "1abc700d-5b13-4b6e-a6a4-808e72069c3f": {
+            "x": 702,
+            "y": 208.015625,
+            "connections": {
+              "DONE": "b7f4da16-faee-4590-8632-3d179e3394b3"
+            },
+            "nodeType": "PollingWaitNode",
+            "displayName": "Polling Wait Node"
+          },
+          "92b339f3-eed9-476a-95e7-16e8ff9890a6": {
+            "x": 960,
+            "y": 348.015625,
+            "connections": {
+              "Reject": "e301438c-0bd0-429c-ab0c-66126501069a",
+              "Retry": "1abc700d-5b13-4b6e-a6a4-808e72069c3f"
+            },
+            "nodeType": "RetryLimitDecisionNode",
+            "displayName": "Retry Limit Decision"
+          }
+        },
+        "staticNodes": {
+          "startNode": {
+            "x": 50,
+            "y": 250
+          },
+          "70e691a5-1e33-4ac3-a356-e7b6d60d92e0": {
+            "x": 500,
+            "y": 50
+          },
+          "e301438c-0bd0-429c-ab0c-66126501069a": {
+            "x": 1200,
+            "y": 588
+          }
+        },
+        "enabled": true
+      },
+      "nodes": {
+        "46600571-fa37-4262-9519-42582b0387ec": {
+          "_id": "46600571-fa37-4262-9519-42582b0387ec",
+          "_rev": "54537814",
+          "_type": {
+            "_id": "UsernameCollectorNode",
+            "name": "Username Collector",
+            "collection": true
+          },
+          "_outcomes": [
+            {
+              "id": "outcome",
+              "displayName": "Outcome"
+            }
+          ]
+        },
+        "26ef0dcb-a43e-4d1e-a58a-ae4885bb4829": {
+          "_id": "26ef0dcb-a43e-4d1e-a58a-ae4885bb4829",
+          "_rev": "395098358",
+          "apiToken": null,
+          "message": "",
+          "serviceUrl": "",
+          "_type": {
+            "_id": "OctopusNode",
+            "name": "Octopus Node",
+            "collection": true
+          },
+          "_outcomes": [
+            {
+              "id": "True",
+              "displayName": "True"
+            },
+            {
+              "id": "Error",
+              "displayName": "Error"
+            }
+          ]
+        },
+        "b7f4da16-faee-4590-8632-3d179e3394b3": {
+          "_id": "b7f4da16-faee-4590-8632-3d179e3394b3",
+          "_rev": "-873831849",
+          "serviceCert": null,
+          "_type": {
+            "_id": "OctopusReturnNode",
+            "name": "Octopus Return Node",
+            "collection": true
+          },
+          "_outcomes": [
+            {
+              "id": "TRUE",
+              "displayName": "True"
+            },
+            {
+              "id": "FALSE",
+              "displayName": "False"
+            },
+            {
+              "id": "UNANSWERED",
+              "displayName": "Unanswered"
+            },
+            {
+              "id": "ERROR",
+              "displayName": "Error"
+            }
+          ]
+        },
+        "1abc700d-5b13-4b6e-a6a4-808e72069c3f": {
+          "_id": "1abc700d-5b13-4b6e-a6a4-808e72069c3f",
+          "_rev": "1787660585",
+          "spamDetectionTolerance": 3,
+          "spamDetectionEnabled": false,
+          "exitMessage": {},
+          "waitingMessage": {},
+          "secondsToWait": 8,
+          "exitable": false,
+          "_type": {
+            "_id": "PollingWaitNode",
+            "name": "Polling Wait Node",
+            "collection": true
+          },
+          "_outcomes": [
+            {
+              "id": "DONE",
+              "displayName": "Done"
+            }
+          ]
+        },
+        "92b339f3-eed9-476a-95e7-16e8ff9890a6": {
+          "_id": "92b339f3-eed9-476a-95e7-16e8ff9890a6",
+          "_rev": "-1141940238",
+          "incrementUserAttributeOnFailure": true,
+          "retryLimit": 3,
+          "_type": {
+            "_id": "RetryLimitDecisionNode",
+            "name": "Retry Limit Decision",
+            "collection": true
+          },
+          "_outcomes": [
+            {
+              "id": "Retry",
+              "displayName": "Retry"
+            },
+            {
+              "id": "Reject",
+              "displayName": "Reject"
+            }
+          ]
+        }
+      },
+      "innerNodes": {},
+      "scripts": {},
+      "emailTemplates": {},
+      "socialIdentityProviders": {},
+      "themes": [],
+      "saml2Entities": {},
+      "circlesOfTrust": {}
+    }
+  }
+}
