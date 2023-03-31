@@ -10,7 +10,8 @@ import java.security.cert.CertificateException;
 import java.util.Base64;
 import java.util.List;
 import java.util.ResourceBundle;
-
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import javax.inject.Inject;
 
 import org.forgerock.http.protocol.Response;
@@ -27,20 +28,22 @@ import org.forgerock.util.promise.NeverThrowsException;
 import org.forgerock.util.promise.Promise;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import java.util.*;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.inject.assistedinject.Assisted;
 
 @Node.Metadata(outcomeProvider = OctopusReturnNode.OctopusReturnOutcomeProvider.class, configClass =
-        OctopusReturnNode.Config.class)
+        OctopusReturnNode.Config.class, tags = {"marketplace", "trustnetwork"})
 public class OctopusReturnNode extends AbstractDecisionNode {
 
     private static final String BUNDLE = OctopusReturnNode.class.getName();
     private final Logger logger = LoggerFactory.getLogger("amAuth");
     private final PollingService pollingService;
     private PublicKey publicKey;
+
+    private static final String loggerPrefix = "[Octopus Return Node][Marketplace] ";
 
     /**
      * Configuration for the node.
@@ -67,39 +70,43 @@ public class OctopusReturnNode extends AbstractDecisionNode {
     @Override
     public Action process(TreeContext context) throws NodeProcessException {
         String responseId = context.sharedState.get(OCTOPUS_RESPONSE_ID).asString();
-        Promise<Response, NeverThrowsException> promise;
         try {
-            promise = this.pollingService.get(responseId);
-        } catch (Exception e) {
-            // Error getting promise, go to False outcome
-            logger.error("Error getting promise for response ID: " + responseId + ", error: " + e);
-            return Action.goTo(AuthOutcome.FALSE.name()).build();
-        }
+            logger.debug(loggerPrefix + "Started");
 
-        Response response;
-        if (promise.isDone()) {
-            try {
+            Promise<Response, NeverThrowsException> promise;
+
+            promise = this.pollingService.get(responseId);
+
+
+
+            Response response;
+            if (promise.isDone()) {
                 // If request has completed, grab the response
                 response = promise.getOrThrow();
                 if (!response.getStatus().isSuccessful()) {
                     logger.debug(
-                            "Auth response (ID: " + responseId + ") status code: " + response.getStatus().getCode());
+                            loggerPrefix +  "Auth response (ID: " + responseId + ") status code: " + response.getStatus().getCode());
                     return Action.goTo(AuthOutcome.FALSE.name()).build();
                 }
                 String status = getResponseStatus(response);
-                logger.debug("Auth response (ID: " + responseId + "): " + status);
+                logger.debug(loggerPrefix + "Auth response (ID: " + responseId + "): " + status);
                 // Validate the response and go to True outcome
                 if (status.equals("accept")) {
                     return Action.goTo(AuthOutcome.TRUE.name()).build();
                 }
                 return Action.goTo(AuthOutcome.FALSE.name()).build();
-            } catch (Exception e) {
-                throw new NodeProcessException(e);
-            } finally {
+            }
+            return Action.goTo(AuthOutcome.UNANSWERED.name()).build();
+        } catch (Exception ex) {
+            logger.error(loggerPrefix + "Exception occurred: " + ex.getStackTrace());
+            context.getStateFor(this).putShared(loggerPrefix + "Exception", new Date() + ": " + ex.getMessage());
+            return Action.goTo(AuthOutcome.ERROR.name()).build();
+        } finally {
+            if(this.pollingService != null && responseId != null) {
                 this.pollingService.remove(responseId);
             }
         }
-        return Action.goTo(AuthOutcome.UNANSWERED.name()).build();
+
     }
 
     private String getResponseStatus(Response response)
@@ -112,7 +119,7 @@ public class OctopusReturnNode extends AbstractDecisionNode {
         final String algorithm = jsonObject.get("algorithm").getAsString();
 
         if (!checkSignature(payload, signature, algorithm)) {
-            logger.error("Invalid signature");
+            logger.error(loggerPrefix + "Invalid signature");
             return "invalid";
         }
         return jsonParser.parse(new String(Base64.getDecoder().decode(payload), StandardCharsets.UTF_8))
@@ -126,11 +133,13 @@ public class OctopusReturnNode extends AbstractDecisionNode {
         }
         try {
             Signature signature = Signature.getInstance(algoString);
+
             signature.initVerify(this.publicKey);
             signature.update(payload.getBytes());
             final byte[] decoded = Base64.getDecoder().decode(sig);
             return signature.verify(decoded);
-        } catch (Exception e) {
+        } catch (Exception ex) {
+            logger.error(loggerPrefix + "Exception occurred: " + ex.getStackTrace());
             return false;
         }
     }
@@ -150,7 +159,8 @@ public class OctopusReturnNode extends AbstractDecisionNode {
         /**
          * Still waiting for result
          */
-        UNANSWERED
+        UNANSWERED,
+        ERROR
     }
 
     /**
@@ -165,7 +175,8 @@ public class OctopusReturnNode extends AbstractDecisionNode {
             return ImmutableList.of(
                     new Outcome(AuthOutcome.TRUE.name(), bundle.getString("trueOutcome")),
                     new Outcome(AuthOutcome.FALSE.name(), bundle.getString("falseOutcome")),
-                    new Outcome(AuthOutcome.UNANSWERED.name(), bundle.getString("unansweredOutcome")));
+                    new Outcome(AuthOutcome.UNANSWERED.name(), bundle.getString("unansweredOutcome")),
+                    new Outcome(AuthOutcome.ERROR.name(), bundle.getString("errorOutcome")));
         }
     }
 }

@@ -39,10 +39,12 @@ import org.forgerock.openam.sm.annotations.adapters.Password;
 import org.forgerock.services.context.RootContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.forgerock.util.i18n.PreferredLocales;
+import java.util.*;
 
 import com.google.inject.assistedinject.Assisted;
 
-@Node.Metadata(outcomeProvider = AbstractDecisionNode.OutcomeProvider.class, configClass = OctopusNode.Config.class)
+@Node.Metadata(outcomeProvider = OctopusNode.OutcomeProvider.class, configClass = OctopusNode.Config.class, tags = {"marketplace", "trustnetwork"})
 public class OctopusNode extends AbstractDecisionNode {
     private final Logger logger = LoggerFactory.getLogger("amAuth");
     private final HttpClientHandler clientHandler;
@@ -50,6 +52,8 @@ public class OctopusNode extends AbstractDecisionNode {
     private final String serviceUrl;
     private final String message;
     private final String applicationKey;
+
+    private static final String loggerPrefix = "[Octopus Node][Marketplace] ";
 
     /**
      * Configuration for the Octopus node.
@@ -81,17 +85,26 @@ public class OctopusNode extends AbstractDecisionNode {
 
     @Override
     public Action process(final TreeContext context) throws NodeProcessException {
-        final String username = context.sharedState.get(SharedStateConstants.USERNAME).asString().toLowerCase();
-        String requestId = UUID.randomUUID().toString();
-        logger.debug("Login request (ID: " + requestId + ") - username: " + username);
-        Request request;
         try {
-            request = authRequest(username);
-        } catch (Exception e) {
-            throw new NodeProcessException(e);
+            logger.debug(loggerPrefix + "Started");
+            final String username = context.sharedState.get(SharedStateConstants.USERNAME).asString().toLowerCase();
+            String requestId = UUID.randomUUID().toString();
+            logger.debug(loggerPrefix + "Login request (ID: " + requestId + ") - username: " + username);
+            Request request;
+            try {
+                request = authRequest(username);
+            } catch (Exception e) {
+                throw new NodeProcessException(e);
+            }
+
+            pollingService.put(requestId, clientHandler.handle(new RootContext(), request));
+            return Action.goTo("True").replaceSharedState(context.sharedState.add(OCTOPUS_RESPONSE_ID, requestId)).build();
+        } catch (Exception ex) {
+            logger.error(loggerPrefix + "Exception occurred: " + ex.getStackTrace());
+            context.getStateFor(this).putShared(loggerPrefix + "Exception", new Date() + ": " + ex.getMessage());
+            return Action.goTo("Error").build();
         }
-        pollingService.put(requestId, clientHandler.handle(new RootContext(), request));
-        return goTo(true).replaceSharedState(context.sharedState.add(OCTOPUS_RESPONSE_ID, requestId)).build();
+
     }
 
     private Request authRequest(final String username)
@@ -106,5 +119,31 @@ public class OctopusNode extends AbstractDecisionNode {
             .setUri(url)
             .setMethod("POST")
             .setEntity(json.asMap());
+    }
+
+    public static final class OutcomeProvider implements org.forgerock.openam.auth.node.api.OutcomeProvider {
+        /**
+         * Outcomes Ids for this node.
+         */
+        static final String SUCCESS_OUTCOME = "True";
+        static final String ERROR_OUTCOME = "Error";
+        // static final String NOT_MOBILE_OUTCOME = "Not Mobile";
+        private static final String BUNDLE = OctopusNode.class.getName();
+
+        @Override
+        public List<Outcome> getOutcomes(PreferredLocales locales, JsonValue nodeAttributes) {
+
+            ResourceBundle bundle = locales.getBundleInPreferredLocale(BUNDLE, OutcomeProvider.class.getClassLoader());
+
+            List<Outcome> results = new ArrayList<>(
+                    Arrays.asList(
+                            new Outcome(SUCCESS_OUTCOME, SUCCESS_OUTCOME)
+                    )
+            );
+            //results.add(new Outcome(NOT_MOBILE_OUTCOME, NOT_MOBILE_OUTCOME));
+            results.add(new Outcome(ERROR_OUTCOME, ERROR_OUTCOME));
+
+            return Collections.unmodifiableList(results);
+        }
     }
 }
