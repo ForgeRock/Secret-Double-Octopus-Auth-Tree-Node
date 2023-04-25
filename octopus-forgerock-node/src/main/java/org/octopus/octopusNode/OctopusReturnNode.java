@@ -3,15 +3,17 @@ package org.octopus.octopusNode;
 import static org.octopus.octopusNode.PollingService.OCTOPUS_RESPONSE_ID;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.security.PublicKey;
 import java.security.Signature;
 import java.security.cert.CertificateException;
 import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+
 import javax.inject.Inject;
 
 import org.forgerock.http.protocol.Response;
@@ -21,6 +23,7 @@ import org.forgerock.openam.auth.node.api.AbstractDecisionNode;
 import org.forgerock.openam.auth.node.api.Action;
 import org.forgerock.openam.auth.node.api.Node;
 import org.forgerock.openam.auth.node.api.NodeProcessException;
+import org.forgerock.openam.auth.node.api.NodeState;
 import org.forgerock.openam.auth.node.api.TreeContext;
 import org.forgerock.openam.sm.annotations.adapters.Password;
 import org.forgerock.util.i18n.PreferredLocales;
@@ -28,7 +31,7 @@ import org.forgerock.util.promise.NeverThrowsException;
 import org.forgerock.util.promise.Promise;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.*;
+
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -39,11 +42,11 @@ import com.google.inject.assistedinject.Assisted;
 public class OctopusReturnNode extends AbstractDecisionNode {
 
     private static final String BUNDLE = OctopusReturnNode.class.getName();
-    private final Logger logger = LoggerFactory.getLogger("amAuth");
+    private final Logger logger = LoggerFactory.getLogger(OctopusReturnNode.class);
     private final PollingService pollingService;
     private PublicKey publicKey;
 
-    private static final String loggerPrefix = "[Octopus Return Node][Marketplace] ";
+    private static final String loggerPrefix = "[Octopus Return][Marketplace] ";
 
     /**
      * Configuration for the node.
@@ -69,7 +72,8 @@ public class OctopusReturnNode extends AbstractDecisionNode {
 
     @Override
     public Action process(TreeContext context) throws NodeProcessException {
-        String responseId = context.sharedState.get(OCTOPUS_RESPONSE_ID).asString();
+        NodeState ns = context.getStateFor(this);
+        String responseId = ns.get(OCTOPUS_RESPONSE_ID).asString();
         try {
             logger.debug(loggerPrefix + "Started");
 
@@ -100,6 +104,10 @@ public class OctopusReturnNode extends AbstractDecisionNode {
         } catch (Exception ex) {
             logger.error(loggerPrefix + "Exception occurred: " + ex.getStackTrace());
             context.getStateFor(this).putShared(loggerPrefix + "Exception", new Date() + ": " + ex.getMessage());
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            ex.printStackTrace(pw);
+            context.getStateFor(this).putShared(loggerPrefix + "StackTracke", new Date() + ": " + sw.toString());
             return Action.goTo(AuthOutcome.ERROR.name()).build();
         } finally {
             if(this.pollingService != null && responseId != null) {
@@ -123,7 +131,7 @@ public class OctopusReturnNode extends AbstractDecisionNode {
             return "invalid";
         }
         return jsonParser.parse(new String(Base64.getDecoder().decode(payload), StandardCharsets.UTF_8))
-                         .getAsJsonObject().get("authStatus").getAsString();
+                .getAsJsonObject().get("authStatus").getAsString();
     }
 
     private boolean checkSignature(String payload, String sig, String algorithm) {
@@ -170,8 +178,8 @@ public class OctopusReturnNode extends AbstractDecisionNode {
         @Override
         public List<Outcome> getOutcomes(PreferredLocales locales, JsonValue nodeAttributes) {
             ResourceBundle bundle = locales.getBundleInPreferredLocale(OctopusReturnNode.BUNDLE,
-                                                                       OctopusReturnOutcomeProvider.class
-                                                                               .getClassLoader());
+                    OctopusReturnOutcomeProvider.class
+                            .getClassLoader());
             return ImmutableList.of(
                     new Outcome(AuthOutcome.TRUE.name(), bundle.getString("trueOutcome")),
                     new Outcome(AuthOutcome.FALSE.name(), bundle.getString("falseOutcome")),
