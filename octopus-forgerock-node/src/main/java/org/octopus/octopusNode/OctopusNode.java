@@ -18,8 +18,15 @@ package org.octopus.octopusNode;
 
 import static org.octopus.octopusNode.PollingService.OCTOPUS_RESPONSE_ID;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -33,27 +40,27 @@ import org.forgerock.openam.auth.node.api.AbstractDecisionNode;
 import org.forgerock.openam.auth.node.api.Action;
 import org.forgerock.openam.auth.node.api.Node;
 import org.forgerock.openam.auth.node.api.NodeProcessException;
+import org.forgerock.openam.auth.node.api.NodeState;
 import org.forgerock.openam.auth.node.api.SharedStateConstants;
 import org.forgerock.openam.auth.node.api.TreeContext;
 import org.forgerock.openam.sm.annotations.adapters.Password;
 import org.forgerock.services.context.RootContext;
+import org.forgerock.util.i18n.PreferredLocales;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.forgerock.util.i18n.PreferredLocales;
-import java.util.*;
 
 import com.google.inject.assistedinject.Assisted;
 
 @Node.Metadata(outcomeProvider = OctopusNode.OutcomeProvider.class, configClass = OctopusNode.Config.class, tags = {"marketplace", "trustnetwork"})
 public class OctopusNode extends AbstractDecisionNode {
-    private final Logger logger = LoggerFactory.getLogger("amAuth");
+    private final Logger logger = LoggerFactory.getLogger(OctopusNode.class);
     private final HttpClientHandler clientHandler;
     private final PollingService pollingService;
     private final String serviceUrl;
     private final String message;
     private final String applicationKey;
 
-    private static final String loggerPrefix = "[Octopus Node][Marketplace] ";
+    private static final String loggerPrefix = "[Octopus][Marketplace] ";
 
     /**
      * Configuration for the Octopus node.
@@ -85,25 +92,28 @@ public class OctopusNode extends AbstractDecisionNode {
 
     @Override
     public Action process(final TreeContext context) throws NodeProcessException {
+        Request request = null;
         try {
             logger.debug(loggerPrefix + "Started");
-            final String username = context.sharedState.get(SharedStateConstants.USERNAME).asString().toLowerCase();
+            NodeState ns = context.getStateFor(this);
+            final String username = ns.get(SharedStateConstants.USERNAME).asString().toLowerCase();
             String requestId = UUID.randomUUID().toString();
             logger.debug(loggerPrefix + "Login request (ID: " + requestId + ") - username: " + username);
-            Request request;
-            try {
-                request = authRequest(username);
-            } catch (Exception e) {
-                throw new NodeProcessException(e);
-            }
-
+            request = authRequest(username);
             pollingService.put(requestId, clientHandler.handle(new RootContext(), request));
-            return Action.goTo("True").replaceSharedState(context.sharedState.add(OCTOPUS_RESPONSE_ID, requestId)).build();
+            ns.putShared(OCTOPUS_RESPONSE_ID, requestId);
+            return Action.goTo("True").build();
         } catch (Exception ex) {
             logger.error(loggerPrefix + "Exception occurred: " + ex.getStackTrace());
             context.getStateFor(this).putShared(loggerPrefix + "Exception", new Date() + ": " + ex.getMessage());
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            ex.printStackTrace(pw);
+            context.getStateFor(this).putShared(loggerPrefix + "StackTracke", new Date() + ": " + sw.toString());
             return Action.goTo("Error").build();
+
         }
+        
 
     }
 
@@ -116,9 +126,9 @@ public class OctopusNode extends AbstractDecisionNode {
         reqMap.put("message", message);
         JsonValue json = new JsonValue(reqMap);
         return new Request()
-            .setUri(url)
-            .setMethod("POST")
-            .setEntity(json.asMap());
+                .setUri(url)
+                .setMethod("POST")
+                .setEntity(json.asMap());
     }
 
     public static final class OutcomeProvider implements org.forgerock.openam.auth.node.api.OutcomeProvider {
@@ -128,13 +138,8 @@ public class OctopusNode extends AbstractDecisionNode {
         static final String SUCCESS_OUTCOME = "True";
         static final String ERROR_OUTCOME = "Error";
         // static final String NOT_MOBILE_OUTCOME = "Not Mobile";
-        private static final String BUNDLE = OctopusNode.class.getName();
-
         @Override
         public List<Outcome> getOutcomes(PreferredLocales locales, JsonValue nodeAttributes) {
-
-            ResourceBundle bundle = locales.getBundleInPreferredLocale(BUNDLE, OutcomeProvider.class.getClassLoader());
-
             List<Outcome> results = new ArrayList<>(
                     Arrays.asList(
                             new Outcome(SUCCESS_OUTCOME, SUCCESS_OUTCOME)

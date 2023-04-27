@@ -23,7 +23,7 @@
     <artifactId>octopusNode</artifactId>
 
     <groupId>org.octopus</groupId>
-    <version>1.0.7</version>
+    <version>1.0.8</version>
     <name>Template for an Auth Tree Node maven project</name>
     <description>An Authentication Tree Node for ForgeRock's Identity Platform</description>
 
