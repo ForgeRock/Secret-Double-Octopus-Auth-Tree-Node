@@ -113,17 +113,7 @@ public class OctopusNode extends AbstractDecisionNode {
             return Action.goTo("Error").build();
 
         }
-        finally {
-            try {
-                if (request!=null) {
-                    request.close();
-                    clientHandler.close();
-                }
-            }
-            catch(Exception e) {
-                //do nothing
-            }
-        }
+        
 
     }
 
